@@ -16,7 +16,8 @@
     "bulma": "^0.6.2",
     "node-sass": "^4.7.2",
     "nuxt": "^1.0.0",
-    "sass-loader": "^6.0.6"
+    "sass-loader": "^6.0.6",
+    "vue-worker": "^1.2.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

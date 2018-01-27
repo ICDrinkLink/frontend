@@ -11,34 +11,44 @@ const createStore = () => {
         lat: null,
         lng: null
       },
-      hasLocation: false
+      hasLocation: false,
+      uid: null
     },
     actions: {
-      init ({ dispatch }) {
-        dispatch('getLocation')
-      },
-      getLocation({ commit, dispatch }) {
-        navigator.geolocation.getCurrentPosition(position => {
+      init ({ commit }) {
+        firebase.auth().signInAnonymously()
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            console.log(user)
+            commit('setUid', user.uid)
+          } else {
+            commit('setUid', null)
+          }
+        })
+
+        navigator.geolocation.watchPosition(position => {
+          // date = new Date
+          // console.log(`Got location ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`)
           let myPos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           }
-          commit('setMy', myPos)
-          setTimeout(() => {
-            dispatch('getLocation')
-          }, 5000)
-        })
+          commit('setMyPos', myPos)
+        });
       }
     },
     mutations: {
-      setHome (state, pos) {
+      setHomePos (state, pos) {
         state.home = pos
         localStorage.setItem('lat', pos.lat)
         localStorage.setItem('lng', pos.lng)
       },
-      setMy (state, pos) {
+      setMyPos (state, pos) {
         state.my = pos
         state.hasLocation = true
+      },
+      setUid (state, uid) {
+        state.uid = uid
       }
     },
     getters: {
@@ -47,7 +57,8 @@ const createStore = () => {
       },
       getMy: state => {
         return state.hasLocation ? state.my : null
-      }
+      },
+      getUid: state => state.uid
     }
   })
 }

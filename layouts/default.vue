@@ -34,6 +34,10 @@
       home () {
         this.$router.push('/')
       }
+    },
+    mounted () {
+      // TODO: Display location data warning first
+      this.$store.dispatch('init')
     }
   }
 </script>

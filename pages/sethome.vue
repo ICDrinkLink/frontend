@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     save () {
-      this.$store.commit('setHome', { lat: this.lat, lng: this.lng })
+      this.$store.commit('setHomePos', { lat: this.lat, lng: this.lng })
       this.$router.push('/')
     }
   }
