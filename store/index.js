@@ -3,21 +3,50 @@ import Vuex from 'vuex'
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      lat: parseInt(localStorage.getItem('lat')) || null,
-      lng: parseInt(localStorage.getItem('lng')) || null
+      home: {
+        lat: parseFloat(localStorage.getItem('lat')) || null,
+        lng: parseFloat(localStorage.getItem('lng')) || null
+      },
+      my: {
+        lat: null,
+        lng: null
+      },
+      hasLocation: false
+    },
+    actions: {
+      init ({ dispatch }) {
+        dispatch('getLocation')
+      },
+      getLocation({ commit, dispatch }) {
+        navigator.geolocation.getCurrentPosition(position => {
+          let myPos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+          commit('setMy', myPos)
+          setTimeout(() => {
+            dispatch('getLocation')
+          }, 5000)
+        })
+      }
     },
     mutations: {
-      setLoc (state, { lat, lng }) {
-        console.log(lat, lng)
-        state.lat = lat
-        state.lng = lng
-        localStorage.setItem('lat', lat)
-        localStorage.setItem('lng', lng)
+      setHome (state, pos) {
+        state.home = pos
+        localStorage.setItem('lat', pos.lat)
+        localStorage.setItem('lng', pos.lng)
+      },
+      setMy (state, pos) {
+        state.my = pos
+        state.hasLocation = true
       }
     },
     getters: {
-      loc: state => {
-        return state.lat === null ? null : { lat: state.lat, lng: state.lng }
+      getHome: state => {
+        return state.home.lat !== null ? state.home : null
+      },
+      getMy: state => {
+        return state.hasLocation ? state.my : null
       }
     }
   })

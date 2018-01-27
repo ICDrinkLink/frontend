@@ -7,7 +7,7 @@
           <button class="button is-outlined is-primary">Track Location</button>
           <button class="button is-outlined is-primary">Sober Friend</button>
           <nuxt-link to="sethome" class="button is-outlined is-primary">Set Home</nuxt-link>
-          <nuxt-link to="gohome" :disabled="!loc" class="button is-outlined is-primary">Take Me Home</nuxt-link>
+          <button @click="goHome" :disabled="!(homePos && myPos)" class="button is-outlined is-primary">Take Me Home</button>
         </div>
       </div>
     </div>
@@ -20,8 +20,18 @@
   export default {
     computed: {
       ...mapGetters({
-        'loc': 'loc'
+        'homePos': 'getHome',
+        'myPos': 'getMy'
       })
+    },
+    methods: {
+      goHome () {
+        window.open(`https://www.google.com/maps/dir/${this.myPos.lat},${this.myPos.lng}/${this.homePos.lat},${this.homePos.lng}/`)
+      }
+    },
+    mounted () {
+      // TODO: Display location data warning first
+      this.$store.dispatch('init')
     }
   }
 </script>
