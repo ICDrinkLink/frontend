@@ -1,0 +1,90 @@
+<template>
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-6 is-offset-3">
+          <div v-show="setup">
+            <div class="content">
+              <p class="has-text-centered">Your home location has not been set. Please enter your home below.</p>
+            </div>
+            <div class="field">
+              <input @input="canSave = false" title="Search" name="search" id="search" class="input is-medium" v-show="setup">
+            </div>
+
+            <img v-if="imageURL" :src="imageURL">
+
+            <button @click="save" class="button save is-primary" :disabled="!canSave">Set Location As Home</button>
+          </div>
+
+          <div v-show="!setup">
+            <div class="content">
+              <p class="has-text-centered">Loading, please wait.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      setup: false,
+      autocomplete: null,
+      imageURL: null,
+      canSave: false,
+      lat: null,
+      lng: null
+    }
+  },
+  mounted () {
+    let input = document.getElementById('search')
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        let geolocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+        let circle = new google.maps.Circle({
+          center: geolocation,
+          radius: position.coords.accuracy
+        })
+        this.autocomplete.setBounds(circle.getBounds())
+      })
+    }
+
+    this.autocomplete = new google.maps.places.Autocomplete(input, {})
+    this.autocomplete.addListener('place_changed', () => {
+      this.imageURL = null
+      let place = this.autocomplete.getPlace()
+      this.lat = place.geometry.location.lat()
+      this.lng = place.geometry.location.lng()
+      this.imageURL = `https://maps.googleapis.com/maps/api/staticmap?center=${this.lat},${this.lng}&zoom=15&scale=2&size=640x480&markers=${this.lat},${this.lng}&key=AIzaSyBWtPLCK01ruUB7l3lTDctRjJyT6APntgI&format=jpg`
+      this.canSave = true
+    })
+    this.setup = true
+  },
+  methods: {
+    save () {
+      this.$store.commit('setLoc', { lat: this.lat, lng: this.lng })
+      this.$router.push('/')
+    }
+  }
+}
+</script>
+
+<style scoped>
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .button.save {
+    margin: 1rem auto;
+    display: block;
+  }
+</style>
