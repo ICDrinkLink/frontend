@@ -8,6 +8,7 @@
           <button class="button is-outlined is-primary">Sober Friend</button>
           <nuxt-link to="sethome" class="button is-outlined is-primary">Set Home</nuxt-link>
           <button @click="goHome" :disabled="!(homePos && myPos)" class="button is-outlined is-primary">Take Me Home</button>
+          <nuxt-link to="twitter" class="button is-outlined is-primary">Twitter Bot</nuxt-link>
         </div>
       </div>
     </div>
