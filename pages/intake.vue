@@ -7,7 +7,7 @@
           <p class="content">Choose a type of alcohol and select the amount consumed to estimate the number of units consumed.</p>
 
           <div class="columns is-multiline">
-            <div class="column is-12-touch">
+            <div class="column is-12-touch is-6-desktop">
               <div class="field">
                 <label class="label">Type</label>
                 <div class="select">
@@ -19,7 +19,7 @@
               </div>
             </div>
 
-            <div class="column is-12-touch">
+            <div class="column is-12-touch is-6-desktop">
               <div class="field">
                 <label class="label">Subtype</label>
                 <div class="select">
@@ -28,13 +28,14 @@
                     <template v-else>
                       <option disabled value="">Select an option</option>
                       <option :value="key" :key="key" v-for="(item, key) in drinks[type].items">{{ item.name }}</option>
+                      <option v-if="type === 'beer'" disabled value="bud_light">Bud Light</option>
                     </template>
                   </select>
                 </div>
               </div>
             </div>
 
-            <div class="column is-12-touch">
+            <div class="column is-12-touch is-6-desktop">
               <div class="field">
                 <label class="label">Amount</label>
                 <div class="select">
@@ -49,7 +50,7 @@
               </div>
             </div>
 
-            <div class="column is-12-touch">
+            <div class="column is-12-touch is-6-desktop">
               <div v-if="units" class="content has-text-centered">
                 <p><span class="title is-4">{{ units }}</span> units</p>
               </div>
@@ -103,5 +104,9 @@
   select,
   .select {
     width: 100%;
+  }
+
+  .columns {
+    align-items: flex-end;
   }
 </style>
