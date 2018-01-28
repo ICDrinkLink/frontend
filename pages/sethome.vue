@@ -3,9 +3,8 @@
     <div class="container">
       <div class="columns">
         <div class="column is-6 is-offset-3">
-          <div class="content">
-            <p class="has-text-centered">Your home location has not been set. Please enter your home below.</p>
-          </div>
+          <h3 class="title is-3">Set Home</h3>
+          <p class="content">To be able to help your drunk persona easily navigate home, we need to know your address. This is saved to your device and sent - along with your current location - to Google Maps when you press the 'Take Me Home' button.</p>
           <div class="field">
             <input @input="canSave = false" title="Search" name="search" id="search" class="input is-medium" v-show="setup">
           </div>
@@ -80,5 +79,9 @@ export default {
   .button.save {
     margin: 1rem auto;
     display: block;
+  }
+
+  .button {
+    font-size: 1.5rem;
   }
 </style>
