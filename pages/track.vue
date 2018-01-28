@@ -10,7 +10,11 @@
             <input title="Pair Code" name="pairCode" id="pairCode" class="input is-large" v-model="code">
           </div>
 
-          <button @click="pair" class="button save is-primary">Begin Tracking</button>
+          <button v-if="!uid" :class="{ 'is-loading': loading }" @click="pair" class="button save is-primary">Begin Tracking</button>
+
+          <img v-if="imageURL" :src="imageURL">
+
+          <button v-if="uid" @click="unpair" class="button save is-primary">Stop Tracking</button>
         </div>
       </div>
     </div>
@@ -18,15 +22,61 @@
 </template>
 
 <script>
+  let db = firebase.firestore()
+
   export default {
     data () {
       return {
-        code: null
+        code: null,
+        loading: false,
+        uid: null,
+        snapshot: null,
+        pos: null
+      }
+    },
+    computed: {
+      imageURL () {
+        if (this.pos) {
+          return `https://maps.googleapis.com/maps/api/staticmap?center=${this.pos.lat},${this.pos.lng}&zoom=17&scale=2&size=640x480&markers=${this.pos.lat},${this.pos.lng}&key=AIzaSyBWtPLCK01ruUB7l3lTDctRjJyT6APntgI&format=jpg`
+        } else {
+          return null
+        }
       }
     },
     methods: {
       pair () {
-
+        this.loading = true
+        db.collection('pairCodes').doc(this.code).get().then(
+          doc => {
+            if (doc.exists) {
+              console.log('Valid code')
+              let data = doc.data()
+              this.uid = data.uid
+              this.snapshot = db.collection('users').doc(this.uid).onSnapshot(
+                doc => {
+                  let data = doc.data()
+                  console.log(data)
+                  if (data.lastPos && data.lastPos.latitude && data.lastPos.longitude) {
+                    this.pos = { lat: data.lastPos.latitude, lng: data.lastPos.longitude }
+                  } else {
+                    this.pos = null
+                  }
+                }
+              )
+            } else {
+              console.log('Invalid code')
+            }
+            this.loading = false
+          }
+        )
+      },
+      unpair () {
+        this.uid = null
+        if (this.snapshot) {
+          this.snapshot()
+        }
+        this.snapshot = null
+        this.pos = null
       }
     }
   }

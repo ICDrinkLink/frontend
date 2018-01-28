@@ -3,7 +3,7 @@
     <div class="container">
       <div class="main">
         <div class="main-buttons">
-          <button class="button is-outlined is-primary">Estimate Intake</button>
+          <nuxt-link to="intake" class="button is-outlined is-primary">Estimate Intake</nuxt-link>
           <nuxt-link to="app" class="button is-outlined is-primary">Track Location</nuxt-link>
           <nuxt-link to="track" class="button is-outlined is-primary">Sober Friend</nuxt-link>
           <nuxt-link to="sethome" class="button is-outlined is-primary">Set Home</nuxt-link>
