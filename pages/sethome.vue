@@ -3,24 +3,16 @@
     <div class="container">
       <div class="columns">
         <div class="column is-6 is-offset-3">
-          <div v-show="setup">
-            <div class="content">
-              <p class="has-text-centered">Your home location has not been set. Please enter your home below.</p>
-            </div>
-            <div class="field">
-              <input @input="canSave = false" title="Search" name="search" id="search" class="input is-medium" v-show="setup">
-            </div>
-
-            <img v-if="imageURL" :src="imageURL">
-
-            <button @click="save" class="button save is-primary" :disabled="!canSave">Set Location As Home</button>
+          <div class="content">
+            <p class="has-text-centered">Your home location has not been set. Please enter your home below.</p>
+          </div>
+          <div class="field">
+            <input @input="canSave = false" title="Search" name="search" id="search" class="input is-medium" v-show="setup">
           </div>
 
-          <div v-show="!setup">
-            <div class="content">
-              <p class="has-text-centered">Loading, please wait.</p>
-            </div>
-          </div>
+          <img v-if="imageURL" :src="imageURL">
+
+          <button @click="save" class="button save is-primary" :disabled="!canSave">Set Location As Home</button>
         </div>
       </div>
     </div>
@@ -58,12 +50,14 @@ export default {
 
     this.autocomplete = new google.maps.places.Autocomplete(input, {})
     this.autocomplete.addListener('place_changed', () => {
-      this.imageURL = null
       let place = this.autocomplete.getPlace()
-      this.lat = place.geometry.location.lat()
-      this.lng = place.geometry.location.lng()
-      this.imageURL = `https://maps.googleapis.com/maps/api/staticmap?center=${this.lat},${this.lng}&zoom=15&scale=2&size=640x480&markers=${this.lat},${this.lng}&key=AIzaSyBWtPLCK01ruUB7l3lTDctRjJyT6APntgI&format=jpg`
-      this.canSave = true
+      if (place.geometry) {
+        this.imageURL = null
+        this.lat = place.geometry.location.lat()
+        this.lng = place.geometry.location.lng()
+        this.imageURL = `https://maps.googleapis.com/maps/api/staticmap?center=${this.lat},${this.lng}&zoom=15&scale=2&size=640x480&markers=${this.lat},${this.lng}&key=AIzaSyBWtPLCK01ruUB7l3lTDctRjJyT6APntgI&format=jpg`
+        this.canSave = true
+      }
     })
     this.setup = true
   },
